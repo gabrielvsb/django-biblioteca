@@ -1,6 +1,11 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 
-@login_required(login_url='/account/login/')
+from biblioteca.models import Livro
+
 def home(request):
-    return render(request, 'biblioteca/home.html')
+    livros = Livro.objects.all()
+    context = {
+        'livros': livros
+    }
+    return render(request, 'biblioteca/home.html', context)

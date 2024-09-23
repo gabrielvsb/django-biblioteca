@@ -30,6 +30,7 @@ class Livro(models.Model):
     estoque = models.PositiveIntegerField(default=1)
     quantidade_total = models.PositiveIntegerField(default=1)
     livro_digital = models.FileField(upload_to='pdfs/', blank=True, null=True)
+    capa = models.ImageField(upload_to='capas/', blank=True, null=True)
     
     autor = models.ForeignKey(Autor, on_delete=models.SET_NULL, null=True)
     categoria = models.ForeignKey(Categoria, on_delete=models.SET_NULL, null=True)
