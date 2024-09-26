@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 
-from biblioteca.models import Livro
+from biblioteca.models import Livro, Emprestimo
 
 def home(request):
     livros = Livro.objects.all()
@@ -17,14 +17,21 @@ def emprestimo(request, pk):
     if not livro:
         messages.error(request, "Livro não encontrado")
         return redirect('home')
-    return render(request, 'biblioteca/emprestimo.html')
+    context = {
+        'livro': livro
+    }
+    return render(request, 'biblioteca/emprestimo.html', context)
 
 def detalhes(request, pk):
     livro = Livro.objects.filter(pk=pk).first()
     if not livro:
         messages.error(request, "Livro não encontrado")
         return redirect('home')
+    
+    # if request.method == 'POST':
+    #     emprestimo = Emprestimo(
 
+    #     )
     context = {
         'livro': livro
     }
