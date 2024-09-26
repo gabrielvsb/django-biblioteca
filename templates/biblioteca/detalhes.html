@@ -1,0 +1,24 @@
+{% extends "shared/base.html" %}
+{% block content %}
+    {% if livro %}
+        <h2 class="text-center">Detalhes do livro</h2>
+        <div class="d-flex justify-content-center mt-5">
+            <img class="" style="height: 25em" src="{{ livro.capa.url }}" alt="Capa do livro {{ livro.titulo }}">
+            <div class="ms-3 d-flex flex-column justify-content-between">
+                <div>
+                    <h3>{{ livro.titulo }}</h3>
+                    <span class="fst-italic fw-light">Código do livro: {{ livro.isbn }}</span>
+                    <p class="fw-normal fst-normal">Descrição: {{ livro.descricao }}</p>
+                </div>
+                {% if user.is_authenticated%}
+                    <div class="d-flex flex-column">
+                        <span class='fst-italic fw-light mb-2'>Quantidade disponível: {{ livro.estoque }}</span>
+                        <a name="btn-empestimo" id="btn-empestimo" class="btn btn-primary {% if livro.estoque < 1 %} disabled {% endif %}" href="{% url 'emprestimo' livro.pk %}" role="button" title="Reservar o livro" aria-label="Reservar o livro {{ livro.titulo }}">Reservar</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    {% else %}
+        <span>Dados não encontrados</span>
+    {% endif %}
+{% endblock %}
