@@ -19,7 +19,7 @@
                     title="Reservar o livro" 
                     aria-label="Reservar o livro {{ livro.titulo }}"
                     data-bs-toggle="modal" data-bs-target="#modalConfirma"
-                    >Reservar</button>
+                    >Reservar livro</button>
                 </div>
             </div>
         </div>
@@ -41,8 +41,8 @@
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
           <form method="post" action="{% url 'emprestimo' livro.id %}">
-            {{ csrf_token }}
-            <button type="button" class="btn btn-primary">Confirmar reserva</button>
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary">Confirmar reserva</button>
           </form>
         </div>
       </div>

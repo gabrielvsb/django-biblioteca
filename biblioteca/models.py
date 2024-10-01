@@ -1,6 +1,7 @@
 from django.db import models
 from django.db.models import F
 from django.forms import ValidationError
+from django.contrib.auth.models import User
 
 
 class Autor(models.Model):
@@ -54,6 +55,7 @@ class Pessoa(models.Model):
     nome = models.CharField(max_length=100)
     email = models.CharField(max_length=60, blank=True, null=True, unique=True)
     ativo = models.BooleanField(default=True)
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.nome
@@ -70,3 +72,20 @@ class Emprestimo(models.Model):
 
     def __str__(self):
         return f"Emprestimo: {self.livro.titulo} para {self.pessoa.nome}"
+    
+    def save(self, *args, **kwargs):
+        emprestimo_existente = Emprestimo.objects.filter(
+            livro=self.livro,
+            pessoa=self.pessoa,
+            data_devolucao__isnull=True
+        ).exists()
+
+        if emprestimo_existente:
+            raise ValidationError(f'O usuário já tem um empréstimo ativo para o livro {self.livro.titulo}.')
+
+        if self.livro.estoque < 1:
+            raise ValidationError(f'O livro {self.livro.titulo} não está disponível.')
+        if not self.pk:
+            self.livro.remover_estoque()
+
+        super().save(*args, **kwargs)

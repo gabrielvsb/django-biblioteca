@@ -1,8 +1,9 @@
 from django.contrib.auth.decorators import login_required
+from django.forms import ValidationError
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 
-from biblioteca.models import Livro, Emprestimo
+from biblioteca.models import Livro, Emprestimo, Pessoa
 
 def home(request):
     livros = Livro.objects.all()
@@ -17,6 +18,18 @@ def emprestimo(request, pk):
     if not livro:
         messages.error(request, "Livro não encontrado")
         return redirect('home')
+    
+    if request.method == 'POST':
+        pessoa = Pessoa.objects.get(usuario=request.user)
+        if not pessoa:
+            messages.error(request, "Não é possível fazer emprestimo")
+            return redirect('home')
+        try:
+            Emprestimo.objects.create(livro=livro, pessoa=pessoa)
+        except ValidationError as error:
+            messages.error(request, str(error))
+            return redirect('home')
+
     context = {
         'livro': livro
     }
@@ -27,11 +40,6 @@ def detalhes(request, pk):
     if not livro:
         messages.error(request, "Livro não encontrado")
         return redirect('home')
-    
-    # if request.method == 'POST':
-    #     emprestimo = Emprestimo(
-
-    #     )
     context = {
         'livro': livro
     }
