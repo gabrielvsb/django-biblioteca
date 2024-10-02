@@ -17,10 +17,10 @@
             <div class="container-fluid mx-5">
               <a class="navbar-brand" href="{% url 'home' %}">Biblioteca</a>
               <div class="d-flex align-items-center">
-                <form class="d-flex me-2">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success" type="submit">Search</button>
-                  </form>
+                  <form class="d-flex me-2" method="get" action="{% url 'home' %}">
+                    <input class="form-control me-2" type="text" name="search" placeholder="Pesquisar por título" value="{% if search_query %}{{ search_query }}{% endif %}">
+                    <button class="btn btn-outline-success" type="submit">Buscar</button>
+                </form>
                   {% if user.is_authenticated %}
                     <span>{{ user.username}} | <a href="{% url 'logout' %}">Logout</a></span>
                   {% else %}

@@ -7,8 +7,12 @@ from django.utils import timezone
 from biblioteca.models import Livro, Emprestimo, Pessoa
 
 def home(request):
+    search_query = request.GET.get('search')
     livros = Livro.objects.all()
     livros_com_emprestimo = []
+
+    if search_query:  # Se houver uma busca, filtra os livros pelo título
+        livros = livros.filter(titulo__icontains=search_query)
 
     if request.user.is_authenticated:
         try:
@@ -23,7 +27,8 @@ def home(request):
     
     context = {
         'livros': livros,
-        'livros_com_emprestimo': livros_com_emprestimo
+        'livros_com_emprestimo': livros_com_emprestimo,
+        'search_query': search_query
     }
     return render(request, 'biblioteca/home.html', context)
 
