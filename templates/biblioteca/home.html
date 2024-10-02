@@ -9,8 +9,13 @@
                     <span class="d-block fw-bold mt-1 text-center" style="font-size: 0.8em">{{ livro.titulo }}</span>
                     <a name="btnDetalhes" id="detalhes_{{ livro.pk }}" class="btn btn-outline-secondary w-100 mt-1" href="{% url 'detalhes' livro.pk %}" role="button">Detalhes</a>
                     {% if user.is_authenticated %}
-                        <a name="btnEmprestimo" id="emprestimo_{{ livro.pk }}" class="btn btn-warning w-100 mt-1" href="{% url 'emprestimo' livro.pk %}" role="button">Reservar</a>
+                        {% if livro.id not in livros_com_emprestimo %}
+                            <a name="btn-emprestimo" id="emprestimo_{{ livro.pk }}" class="btn btn-warning w-100 mt-1" href="{% url 'emprestimo' livro.pk %}" role="button">Reservar</a>
+                        {% else %}
+                            <a name="btn-devolucao" id="emprestimo_{{ livro.pk }}" class="btn btn-secondary w-100 mt-1" href="{% url 'devolucao' livro.pk %}" role="button" title="Devolver o livro" aria-label="Devolver o livro {{ livro.titulo }}">Devolver</a>
+                        {% endif %}
                     {% endif%}
+                    
                 </div>
             {% endfor %}
         {% else %}

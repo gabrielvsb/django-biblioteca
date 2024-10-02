@@ -1,0 +1,51 @@
+{% extends "shared/base.html" %}
+{% block content %}
+    {% if livro %}
+        <h2 class="text-center">Devolver livro</h2>
+        <div class="d-flex mt-5">
+            <img class="" style="height: 10em" src="{{ livro.capa.url }}" alt="Capa do livro {{ livro.titulo }}">
+            <div class="ms-3 d-flex flex-column justify-content-between">
+                <div>
+                    <h3>{{ livro.titulo }}</h3>
+                    <span class="fst-italic fw-light">Código do livro: {{ livro.isbn }}</span>
+                </div>
+                <div class="d-flex flex-column">
+                    <button 
+                    name="btn-empestimo" 
+                    id="btn-empestimo" 
+                    class="btn btn-primary {% if livro.estoque < 1 %} disabled {% endif %}" 
+                    role="button" 
+                    title="Devolver o livro" 
+                    aria-label="Devolver o livro {{ livro.titulo }}"
+                    data-bs-toggle="modal" data-bs-target="#modalConfirma"
+                    >Devolver livro</button>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <span>Dados não encontrados</span>
+    {% endif %}
+  
+  <!-- Modal -->
+  <div class="modal fade" id="modalConfirma" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalLabel">Devolver livro</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>Deseja realmente devolver este livro?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+          <form method="post" action="{% url 'devolucao' livro.id %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary">Confirmar devolucao</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+{% endblock %}

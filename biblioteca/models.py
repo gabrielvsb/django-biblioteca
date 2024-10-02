@@ -80,12 +80,14 @@ class Emprestimo(models.Model):
             data_devolucao__isnull=True
         ).exists()
 
-        if emprestimo_existente:
+        if not self.data_devolucao and emprestimo_existente:
             raise ValidationError(f'O usuário já tem um empréstimo ativo para o livro {self.livro.titulo}.')
 
         if self.livro.estoque < 1:
             raise ValidationError(f'O livro {self.livro.titulo} não está disponível.')
         if not self.pk:
             self.livro.remover_estoque()
+        elif self.pk and self.data_devolucao:
+            self.livro.adicionar_estoque()
 
         super().save(*args, **kwargs)

@@ -13,7 +13,11 @@
                 {% if user.is_authenticated%}
                     <div class="d-flex flex-column">
                         <span class='fst-italic fw-light mb-2'>Quantidade disponível: {{ livro.estoque }}</span>
-                        <a name="btn-empestimo" id="btn-empestimo" class="btn btn-warning {% if livro.estoque < 1 %} disabled {% endif %}" href="{% url 'emprestimo' livro.pk %}" role="button" title="Reservar o livro" aria-label="Reservar o livro {{ livro.titulo }}">Reservar</a>
+                        {% if livro.id not in livros_com_emprestimos %}
+                            <a name="btn-empestimo" id="btn-empestimo" class="btn btn-warning {% if livro.estoque < 1 %} disabled {% endif %}" href="{% url 'emprestimo' livro.pk %}" role="button" title="Reservar o livro" aria-label="Reservar o livro {{ livro.titulo }}">Reservar</a>
+                        {% else %}
+                            <a name="btn-devolucao" id="btn-devolucao" class="btn btn-secondary" href="{% url 'devolucao' livro.pk %}" role="button" title="Devolver o livro" aria-label="Devolver o livro {{ livro.titulo }}">Devolver</a>
+                        {% endif %}    
                     </div>
                 {% endif %}
             </div>
