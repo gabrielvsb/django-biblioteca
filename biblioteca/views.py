@@ -10,18 +10,17 @@ def home(request):
     livros = Livro.objects.all()
     livros_com_emprestimo = []
 
-    if request.user:
+    if request.user.is_authenticated:
         try:
             pessoa = Pessoa.objects.get(usuario=request.user)
         except Pessoa.DoesNotExist:
             pessoa = None
-
+        
         livros_com_emprestimo = []
-
         if pessoa:
             emprestimos_ativos = Emprestimo.objects.filter(pessoa=pessoa, data_devolucao__isnull=True)
             livros_com_emprestimo = [emprestimo.livro.id for emprestimo in emprestimos_ativos]
-
+    
     context = {
         'livros': livros,
         'livros_com_emprestimo': livros_com_emprestimo

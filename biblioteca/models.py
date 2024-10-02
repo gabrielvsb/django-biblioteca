@@ -2,6 +2,7 @@ from django.db import models
 from django.db.models import F
 from django.forms import ValidationError
 from django.contrib.auth.models import User
+from django.utils.crypto import get_random_string
 
 
 class Autor(models.Model):
@@ -55,10 +56,26 @@ class Pessoa(models.Model):
     nome = models.CharField(max_length=100)
     email = models.CharField(max_length=60, blank=True, null=True, unique=True)
     ativo = models.BooleanField(default=True)
-    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return self.nome
+    
+    def save(self, *args, **kwargs):
+        if not self.usuario:
+            username = self.email.split('@')[0]
+
+            user = User.objects.create_user(
+                username=username,
+                email=self.email,
+                password=self.cpf,
+                first_name=self.nome.split()[0],
+                last_name=" ".join(self.nome.split()[1:]) if len(self.nome.split()) > 1 else ''
+            )
+
+            self.usuario = user
+
+        super(Pessoa, self).save(*args, **kwargs)
 
 class Emprestimo(models.Model):
     livro = models.ForeignKey(Livro, on_delete=models.CASCADE)
